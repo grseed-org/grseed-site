@@ -63,17 +63,38 @@ http://localhost:4007/admin. Local D1/R2 persistence is under
 `packages/app/.wrangler/`; `task local:setup` creates the local environment and
 applies schema migrations when needed.
 
-## Production commands
+## Production update
+
+Pushing to `master` (or running **Release** via `workflow_dispatch`) applies
+pending D1 migrations and deploys the Worker. That is `task release`. It does
+not bootstrap an admin, seed content, import media, or write Worker secrets.
+
+GitHub Actions secrets:
+
+| Secret | Required for |
+| --- | --- |
+| `CLOUDFLARE_ACCOUNT_ID` | Wrangler account |
+| `CLOUDFLARE_API_TOKEN` | Deploy + remote D1/R2 |
+| `PAYLOAD_SECRET` | Production build; must match the Worker secret |
+
+Create the API token from the **Edit Cloudflare Workers** template and include
+D1 and R2 edit. D1/R2 themselves are Worker bindings in
+`packages/app/wrangler.jsonc`, not extra secrets.
+
+## Manual bootstrap
+
+First-time and data-import commands stay local:
 
 ```sh
 task secret:put
-task migrate
 task admin:bootstrap             # optional, admin endpoint only
 task seed                       # explicit, non-destructive content bootstrap
 task media:seed                  # optional, missing media only
-task deploy                      # or task release (migrate + deploy)
 task richtext:migrate           # run only when an explicit data migration is needed
 ```
 
-Production secrets are read from the repository's deployment secret file and
-must not be committed to `.env`.
+Local production credentials:
+
+```sh
+cp packages/app/.env.production.example packages/app/.env.production
+```

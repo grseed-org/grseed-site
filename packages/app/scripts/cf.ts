@@ -4,47 +4,55 @@ import {tmpdir} from 'node:os';
 import {join, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
-import {z} from 'zod';
-
 const REPO_ROOT = resolve(fileURLToPath(new URL('../../..', import.meta.url)));
 const APP_ROOT = resolve(REPO_ROOT, 'packages/app');
-const SECRET_PATH = resolve(REPO_ROOT, 'secret/cloudflare.json');
+const ENV_PRODUCTION_PATH = resolve(APP_ROOT, '.env.production');
 
-const SecretSchema = z.object({
-  cloudflare: z.object({
-    accountId: z.string().min(1),
-    apiToken: z.string().min(1).optional(),
-    auth: z.string().optional(),
-  }),
-  domains: z.object({
-    canonicalUrl: z.string().url(),
-  }),
-  payload: z.object({
-    secret: z.string().min(1),
-    seedAdminEmail: z.string().email(),
-    seedAdminPassword: z.string().min(1),
-  }),
-});
-
-function loadSecret() {
-  if (!existsSync(SECRET_PATH)) {
-    console.error(`Missing ${SECRET_PATH}.`);
-    process.exit(1);
-  }
-  const parsed = SecretSchema.safeParse(
-    JSON.parse(readFileSync(SECRET_PATH, 'utf8')),
-  );
-  if (!parsed.success) {
-    console.error(`${SECRET_PATH} failed validation:`);
-    for (const issue of parsed.error.issues) {
-      console.error(`- ${issue.path.join('.')}: ${issue.message}`);
+function loadEnvFile(path: string) {
+  if (!existsSync(path)) return;
+  const source = readFileSync(path, 'utf8');
+  for (const rawLine of source.split(/\r?\n/)) {
+    const line = rawLine.trim();
+    if (!line || line.startsWith('#')) continue;
+    const separator = line.indexOf('=');
+    if (separator <= 0) continue;
+    const key = line.slice(0, separator).trim();
+    let value = line.slice(separator + 1).trim();
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1);
     }
-    process.exit(1);
+    if (process.env[key] === undefined) process.env[key] = value;
   }
-  return parsed.data;
 }
 
-const secret = loadSecret();
+function env(name: string): string | undefined {
+  const value = process.env[name]?.trim();
+  return value ? value : undefined;
+}
+
+function requireEnv(name: string): string {
+  const value = env(name);
+  if (!value) {
+    console.error(`Missing required env ${name}.`);
+    console.error(
+      'Set it in the environment (CI secrets) or copy packages/app/.env.production.example to packages/app/.env.production.',
+    );
+    process.exit(1);
+  }
+  return value;
+}
+
+loadEnvFile(ENV_PRODUCTION_PATH);
+
+const accountId = requireEnv('CLOUDFLARE_ACCOUNT_ID');
+const payloadSecret = requireEnv('PAYLOAD_SECRET');
+const apiToken = process.env.CI
+  ? requireEnv('CLOUDFLARE_API_TOKEN')
+  : env('CLOUDFLARE_API_TOKEN');
+
 const sanitizedProcessEnv = {...process.env};
 for (const key of [
   'http_proxy',
@@ -60,19 +68,21 @@ for (const key of [
 
 const baseEnv: Record<string, string | undefined> = {
   ...sanitizedProcessEnv,
-  CLOUDFLARE_ACCOUNT_ID: secret.cloudflare.accountId,
+  CLOUDFLARE_ACCOUNT_ID: accountId,
   CLOUDFLARE_ENV: 'production',
   NODE_ENV: 'production',
-  PAYLOAD_SECRET: secret.payload.secret,
+  PAYLOAD_SECRET: payloadSecret,
 };
 
-if (secret.cloudflare.apiToken) {
-  baseEnv.CLOUDFLARE_API_TOKEN = secret.cloudflare.apiToken;
+if (apiToken) {
+  baseEnv.CLOUDFLARE_API_TOKEN = apiToken;
 }
 
-function spawnEnv(env: Record<string, string | undefined>): NodeJS.ProcessEnv {
+function spawnEnv(
+  envVars: Record<string, string | undefined>,
+): NodeJS.ProcessEnv {
   return Object.fromEntries(
-    Object.entries(env).filter(
+    Object.entries(envVars).filter(
       (entry): entry is [string, string] => entry[1] !== undefined,
     ),
   ) as NodeJS.ProcessEnv;
@@ -98,11 +108,11 @@ function spawnBin(
   name: string,
   args: string[],
   stdio: StdioOptions,
-  env = baseEnv,
+  envVars = baseEnv,
 ) {
   return spawn(packageBin(name), args, {
     cwd: APP_ROOT,
-    env: spawnEnv(env),
+    env: spawnEnv(envVars),
     stdio,
     windowsHide: true,
     shell: process.platform === 'win32',
@@ -112,10 +122,10 @@ function spawnBin(
 async function run(
   name: string,
   args: string[],
-  env: Record<string, string | undefined> = baseEnv,
+  envVars: Record<string, string | undefined> = baseEnv,
 ) {
   console.log(`\n> ${name} ${args.join(' ')}`);
-  const proc = spawnBin(name, args, 'inherit', env);
+  const proc = spawnBin(name, args, 'inherit', envVars);
   const code = await waitForExit(proc);
   if (code !== 0) process.exit(code);
 }
@@ -123,10 +133,10 @@ async function run(
 async function runCapture(
   name: string,
   args: string[],
-  env: Record<string, string | undefined> = baseEnv,
+  envVars: Record<string, string | undefined> = baseEnv,
 ) {
   console.log(`\n> ${name} ${args.join(' ')}`);
-  const proc = spawnBin(name, args, ['ignore', 'pipe', 'inherit'], env);
+  const proc = spawnBin(name, args, ['ignore', 'pipe', 'inherit'], envVars);
   let output = '';
   proc.stdout?.setEncoding('utf8');
   proc.stdout?.on('data', chunk => {
@@ -150,7 +160,7 @@ async function putSecret() {
   await runWithInput(
     'wrangler',
     ['secret', 'put', 'PAYLOAD_SECRET', '--env=production'],
-    secret.payload.secret,
+    payloadSecret,
   );
 }
 
@@ -249,17 +259,20 @@ async function migrate() {
 }
 
 async function bootstrapAdmin() {
-  const url = new URL('/internal/bootstrap-admin', secret.domains.canonicalUrl);
+  const url = new URL(
+    '/internal/bootstrap-admin',
+    requireEnv('CANONICAL_URL'),
+  );
   console.log(`\n> POST ${url.toString()}`);
   const response = await fetch(url, {
     method: 'POST',
     headers: {
-      authorization: `Bearer ${secret.payload.secret}`,
+      authorization: `Bearer ${payloadSecret}`,
       'content-type': 'application/json',
     },
     body: JSON.stringify({
-      email: secret.payload.seedAdminEmail,
-      password: secret.payload.seedAdminPassword,
+      email: requireEnv('PAYLOAD_SEED_ADMIN_EMAIL'),
+      password: requireEnv('PAYLOAD_SEED_ADMIN_PASSWORD'),
     }),
   });
   const body = await response.text();
@@ -273,22 +286,19 @@ async function bootstrapAdmin() {
 async function seedProduction() {
   await run('tsx', ['scripts/seed.ts'], {
     ...baseEnv,
-    PAYLOAD_SEED_ADMIN_EMAIL: secret.payload.seedAdminEmail,
-    PAYLOAD_SEED_ADMIN_PASSWORD: secret.payload.seedAdminPassword,
+    PAYLOAD_SEED_ADMIN_EMAIL: requireEnv('PAYLOAD_SEED_ADMIN_EMAIL'),
+    PAYLOAD_SEED_ADMIN_PASSWORD: requireEnv('PAYLOAD_SEED_ADMIN_PASSWORD'),
   });
 }
 async function mediaSeed() {
   await run('tsx', ['scripts/media-seed.ts']);
 }
 async function richtextMigrate() {
-  const url = new URL(
-    '/internal/richtext-migrate',
-    secret.domains.canonicalUrl,
-  );
+  const url = new URL('/internal/richtext-migrate', requireEnv('CANONICAL_URL'));
   console.log(`\n> POST ${url.toString()}`);
   const response = await fetch(url, {
     method: 'POST',
-    headers: {authorization: `Bearer ${secret.payload.secret}`},
+    headers: {authorization: `Bearer ${payloadSecret}`},
   });
   const body = await response.text();
   console.log(`${response.status} ${response.statusText}`);

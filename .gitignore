@@ -7,6 +7,7 @@
 .temp/
 
 secret/
+.env.production
 
 # Logs
 *.log

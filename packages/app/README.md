@@ -31,14 +31,14 @@ and applies Payload migrations when the local database has no schema.
 | `task seed:local` | Create missing local Payload documents from `@grseed/seed`. |
 | `task media:seed:local` | Import missing seed media into local Payload/R2. |
 | `task payload:generate` | Generate Cloudflare types, Payload types, and import map. |
-| `task secret:put` | Write production `PAYLOAD_SECRET` to Cloudflare. |
+| `task secret:put` | Write production `PAYLOAD_SECRET` to the Cloudflare Worker secret store. |
 | `task migrate` | Apply production D1 migrations. |
 | `task admin:bootstrap` | Bootstrap only the production admin endpoint. |
 | `task seed` | Run the explicit non-destructive production Payload seed. |
 | `task media:seed` | Import missing production seed media. |
 | `task richtext:migrate` | Run the explicit Markdown-to-Lexical data migration. |
 | `task deploy` | Build and deploy to Cloudflare. |
-| `task release` | Run production migrations and deploy. |
+| `task release` | Run production migrations and deploy. CI on `master` runs this only. |
 
 ## Data ownership
 
@@ -58,5 +58,8 @@ runs.
 - `scripts/seed.ts` and `scripts/media-seed.ts` are explicit bootstrap entry
   points; they are not part of the deploy path.
 
-Production secrets and bindings are managed by Cloudflare and `wrangler.jsonc`;
-do not commit them to `.env`.
+D1/R2 are Worker bindings in `wrangler.jsonc`. Deploy credentials are
+`CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, and `PAYLOAD_SECRET`. Copy
+`.env.production.example` to `.env.production` locally, or set the same names
+as GitHub Actions secrets. CI runs `task release` only; bootstrap, seed, media
+seed, and `secret:put` stay manual. Do not commit filled env files.
