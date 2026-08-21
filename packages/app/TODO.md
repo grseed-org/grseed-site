@@ -1,0 +1,1 @@
+POST 类型 NEWS 的 API

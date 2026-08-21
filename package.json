@@ -1,0 +1,8 @@
+{
+  "name": "grseed-site",
+  "private": true,
+  "packageManager": "yarn@4.17.1",
+  "workspaces": [
+    "packages/*"
+  ]
+}

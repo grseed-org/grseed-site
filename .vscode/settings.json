@@ -1,0 +1,28 @@
+{
+  "cSpell.words": [
+    "boxicons",
+    "dbgenerated",
+    "easymde",
+    "elysia",
+    "grseed",
+    "GUORUI",
+    "importmap",
+    "inlang",
+    "liangyou",
+    "paraglide",
+    "payloadcms",
+    "ruiliangyou",
+    "unocss",
+    "uuidv",
+    "vike"
+  ],
+  "files.watcherExclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "search.exclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "files.readonlyInclude": {
+    "**/routeTree.gen.ts": true
+  }
+}

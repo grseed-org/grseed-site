@@ -1,0 +1,13 @@
+{
+  "name": "@grseed/seed",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "devDependencies": {
+    "graphql": "^16.14.1",
+    "payload": "3.85.1",
+    "typescript": "^5.7.2"
+  }
+}

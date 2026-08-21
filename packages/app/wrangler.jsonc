@@ -1,0 +1,48 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "grseed",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-06-24",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "grseed",
+      "database_id": "d483f665-be1c-461b-b895-e900d0b31712"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "R2",
+      "bucket_name": "grseed"
+    }
+  ],
+  "env": {
+    "production": {
+      "name": "grseed",
+      "routes": [
+        {"pattern": "grseed.com/*", "zone_name": "grseed.com"},
+        {"pattern": "www.grseed.com/*", "zone_name": "grseed.com"},
+        {"pattern": "origin.grseed.com/*", "zone_name": "grseed.com"}
+      ],
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "grseed",
+          "database_id": "d483f665-be1c-461b-b895-e900d0b31712",
+          "remote": true
+        }
+      ],
+      "r2_buckets": [
+        {
+          "binding": "R2",
+          "bucket_name": "grseed"
+        }
+      ]
+    }
+  }
+}

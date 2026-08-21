@@ -1,0 +1,144 @@
+{
+  "LocaleSwitcher": {
+    "label": "Language",
+    "current": "Current locale: {locale}"
+  },
+  "Common": {
+    "contact": "联系我们",
+    "viewProducts": "查看产品中心",
+    "learnMore": "了解更多",
+    "viewMore": "查看更多",
+    "viewAll": "View all",
+    "viewDetails": "查看详情",
+    "getContact": "获取联系方式",
+    "joinUs": "加入我们",
+    "applyConsult": "投递/咨询",
+    "serviceHotline": "咨询服务电话",
+    "learnCompany": "了解公司",
+    "learnResearch": "了解科研成果",
+    "learnProductsBusiness": "了解产品与业务",
+    "viewVarieties": "查看品种介绍",
+    "empty": "暂无数据"
+  },
+  "Nav": {
+    "menu": "导航",
+    "openMenu": "打开导航",
+    "closeMenu": "关闭导航"
+  },
+  "Footer": {
+    "contactTitle": "联系我们",
+    "addressLabel": "地址",
+    "phoneLabel": "电话",
+    "emailLabel": "邮箱",
+    "admin": "管理"
+  },
+  "About": {
+    "badgeAssociation": "协会理事/会员单位",
+    "badgeLeader": "龙头企业",
+    "badgeIso": "ISO9001 认证",
+    "varietyCount": "{count} 个",
+    "approvalsNationalBadge": "国审 {count}",
+    "approvalsProvincialBadge": "省审 {count}",
+    "approvalsTrialBadge": "区试 {count}",
+    "approvalsNationalCard": "国审品种",
+    "approvalsNationalCardDesc": "国家级审定方向",
+    "approvalsProvincialCard": "省审品种",
+    "approvalsProvincialCardDesc": "省级审定方向",
+    "approvalsTrialCard": "区试品种",
+    "approvalsTrialCardDesc": "区域试验布局",
+    "researchLocationCardDesc": "立足安徽 · 面向全国",
+    "researchStatProducts": "产品品种",
+    "researchStatGroups": "产品分组",
+    "researchStatNational": "国家审定",
+    "researchStatProvincial": "省级审定"
+  },
+  "Hr": {
+    "badgeMission": "使命与荣誉",
+    "badgeIdeal": "共同理想",
+    "badgeTraining": "体系化培养",
+    "valuesBadge": "长期主义",
+    "valueCardBadge": "理念 {index}",
+    "badgeMutual": "双向选择",
+    "badgeInnovation": "鼓励创新",
+    "badgeLearning": "持续学习"
+  },
+  "Contact": {
+    "badgeClickCopy": "点击即可复制",
+    "badgeToast": "弹窗提示成功",
+    "addressLabel": "地址",
+    "phoneLabel": "电话",
+    "emailLabel": "邮箱",
+    "websiteLabel": "官网",
+    "addressHint": "点击复制地址",
+    "phoneHint": "点击复制电话号码",
+    "emailHint": "点击复制邮箱地址",
+    "websiteHint": "点击复制网址",
+    "httpsTip": "提示：如浏览器不允许自动写入剪贴板，可尝试使用 HTTPS 或升级浏览器。",
+    "mobileLabel": "手机号",
+    "copy": "复制",
+    "copyMobile": "一键复制手机号",
+    "copiedTitle": "复制成功",
+    "copiedToast": "{kind}已复制到剪贴板：",
+    "copyKind": {
+      "mobile": "手机号",
+      "email": "邮箱",
+      "address": "地址",
+      "website": "网址"
+    }
+  },
+  "Post": {
+    "back": "Back",
+    "updatedAt": "Updated: {date}",
+    "credentialsTitle": "Related credentials"
+  },
+  "Product": {
+    "back": "Back to products",
+    "updatedAt": "Updated: {date}",
+    "factsTitle": "Variety details",
+    "credentialsTitle": "Approvals and credentials",
+    "factGroups": {
+      "overview": "Overview",
+      "yield": "Yield",
+      "quality": "Quality",
+      "resistance": "Resistance",
+      "cultivation": "Cultivation",
+      "region": "Region"
+    }
+  },
+  "Credential": {
+    "types": {
+      "approval": "Approval",
+      "plant-variety-right": "Plant variety right",
+      "patent": "Patent",
+      "award": "Award",
+      "tech-achievement": "Technology achievement"
+    },
+    "levels": {
+      "national": "National",
+      "provincial": "Provincial",
+      "municipal": "Municipal",
+      "registration": "Registration",
+      "trial": "Regional trial"
+    }
+  },
+  "Gallery": {
+    "close": "Back",
+    "next": "Next image",
+    "previous": "Previous image",
+    "thumbnails": "Image thumbnails",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out"
+  },
+  "Explorer": {
+    "clear": "Clear",
+    "searchPlaceholder": "Search titles and content...",
+    "categories": "Categories",
+    "tags": "Tags",
+    "all": "All",
+    "updating": "Updating...",
+    "itemsCount": "{visible} / {total} items",
+    "noResults": "No results",
+    "noResultsDescription": "Clear filters or try another keyword.",
+    "listTitle": "{title} list"
+  }
+}

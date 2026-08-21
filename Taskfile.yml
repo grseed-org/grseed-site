@@ -1,0 +1,177 @@
+version: '3'
+
+vars:
+  APP_DIR: packages/app
+
+tasks:
+  local:setup:
+    desc: Ensure local Wrangler D1/R2 persist and apply Payload migrations if needed.
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - yarn exec tsx scripts/ensure-local-cf.ts
+
+  dev:
+    desc: Start the local Next dev server.
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - task: local:setup
+      - yarn exec next dev --port 4007
+
+  build:
+    desc: Build the Next app.
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - yarn exec next build
+
+  start:
+    desc: Start the built Next app.
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - yarn exec next start --port 4007
+
+  test:
+    desc: Run app tests.
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - yarn exec vitest run
+
+  lint:
+    desc: Run ESLint.
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - yarn exec eslint
+
+  format:
+    desc: Run Prettier.
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - yarn exec prettier --write .
+
+  check:
+    desc: Format and auto-fix lint issues.
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - yarn exec prettier --write .
+      - yarn exec eslint --fix
+
+  typecheck:
+    desc: Typecheck the app.
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - yarn exec tsc -p tsconfig.json --noEmit
+
+  payload:
+    desc: Run the Payload CLI. Pass args after --.
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - yarn exec payload {{.CLI_ARGS}}
+
+  payload:generate:
+    desc: Generate Cloudflare, Payload, and import-map artifacts.
+    cmds:
+      - task: generate:types
+      - task: generate:importmap
+
+  generate:types:
+    desc: Generate Cloudflare and Payload types.
+    cmds:
+      - task: generate:types:cloudflare
+      - task: generate:types:payload
+
+  generate:types:cloudflare:
+    desc: Generate Cloudflare binding types.
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - yarn exec wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts
+
+  generate:types:payload:
+    desc: Generate Payload types.
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - yarn exec payload generate:types
+
+  generate:importmap:
+    desc: Generate the Payload import map.
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - yarn exec payload generate:importmap
+
+  migrate:create:
+    desc: Create a Payload migration.
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - yarn exec payload migrate:create
+
+  migrate:local:
+    desc: Apply Payload migrations to the local D1 database.
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - yarn exec payload migrate
+
+  seed:local:
+    desc: Seed the local D1 database without touching production.
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - task: local:setup
+      - yarn exec tsx --env-file=.env scripts/seed.ts
+
+  media:seed:local:
+    desc: Seed missing media into the local Payload/R2 bindings.
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - task: local:setup
+      - yarn exec tsx --env-file=.env scripts/media-seed.ts
+
+  migrate:
+    desc: Apply production D1 migrations through the Cloudflare helper.
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - yarn exec tsx scripts/cf.ts migrate
+
+  admin:bootstrap:
+    desc: Bootstrap only the production admin through the Cloudflare helper.
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - yarn exec tsx scripts/cf.ts bootstrap-admin
+
+  seed:
+    desc: Run the non-destructive production Payload seed explicitly.
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - yarn exec tsx scripts/cf.ts seed
+
+  media:seed:
+    desc: Seed missing media into production through the Cloudflare helper.
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - yarn exec tsx scripts/cf.ts media-seed
+
+  richtext:migrate:
+    desc: Convert existing production Markdown body fields to Payload Lexical rich text.
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - yarn exec tsx scripts/cf.ts richtext-migrate
+
+  secret:put:
+    desc: Write PAYLOAD_SECRET to the production Cloudflare Worker.
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - yarn exec tsx scripts/cf.ts put-secret
+
+  deploy:
+    desc: Build and deploy the Cloudflare app.
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - yarn exec tsx scripts/cf.ts deploy
+
+  deploy:built:
+    desc: Deploy an already-built Cloudflare app.
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - yarn exec tsx scripts/cf.ts deploy-built
+
+  release:
+    desc: Run production migrations and deploy.
+    dir: '{{.APP_DIR}}'
+    cmds:
+      - yarn exec tsx scripts/cf.ts release

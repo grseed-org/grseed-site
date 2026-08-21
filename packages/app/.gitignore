@@ -1,0 +1,27 @@
+node_modules
+.DS_Store
+dist
+dist-ssr
+*.local
+count.txt
+.env
+.dev.vars
+.dev.vars.*
+.nitro
+.tanstack
+.wrangler
+.open-next
+.output
+.vinxi
+todos.json
+.output.zip
+
+# Next.js
+.next
+next-env.d.ts
+
+# Payload generated artifacts + local-disk uploads
+/media
+src/payload-types.ts
+src/generated-schema.graphql
+cloudflare-env.d.ts
