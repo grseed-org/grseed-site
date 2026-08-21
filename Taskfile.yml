@@ -15,6 +15,9 @@ tasks:
     dir: '{{.APP_DIR}}'
     cmds:
       - task: local:setup
+      # Windows Turbopack fails with "directory is not empty" (os error 145)
+      # when leftover .next/dev/node_modules copies block junction creation.
+      - node -e "require('fs').rmSync('.next/dev/node_modules',{recursive:true,force:true})"
       - yarn exec next dev --port 4007
 
   build:
