@@ -174,7 +174,7 @@ tasks:
       - yarn exec tsx scripts/cf.ts deploy-built
 
   release:
-    desc: Run production migrations and deploy. CI on master runs this only.
+    desc: Run production migrations and deploy. CI runs this on v* tags or workflow_dispatch.
     dir: '{{.APP_DIR}}'
     cmds:
       - yarn exec tsx scripts/cf.ts release

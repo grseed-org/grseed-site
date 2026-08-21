@@ -65,9 +65,14 @@ applies schema migrations when needed.
 
 ## Production update
 
-Pushing to `master` (or running **Release** via `workflow_dispatch`) applies
+Pushing a `v*` tag (or running **Release** via `workflow_dispatch`) applies
 pending D1 migrations and deploys the Worker. That is `task release`. It does
 not bootstrap an admin, seed content, import media, or write Worker secrets.
+
+```sh
+git tag v1.0.0
+git push origin v1.0.0
+```
 
 GitHub Actions secrets:
 

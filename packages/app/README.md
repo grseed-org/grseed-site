@@ -38,7 +38,7 @@ and applies Payload migrations when the local database has no schema.
 | `task media:seed` | Import missing production seed media. |
 | `task richtext:migrate` | Run the explicit Markdown-to-Lexical data migration. |
 | `task deploy` | Build and deploy to Cloudflare. |
-| `task release` | Run production migrations and deploy. CI on `master` runs this only. |
+| `task release` | Run production migrations and deploy. CI runs this on `v*` tags or `workflow_dispatch`. |
 
 ## Data ownership
 
@@ -61,5 +61,6 @@ runs.
 D1/R2 are Worker bindings in `wrangler.jsonc`. Deploy credentials are
 `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, and `PAYLOAD_SECRET`. Copy
 `.env.production.example` to `.env.production` locally, or set the same names
-as GitHub Actions secrets. CI runs `task release` only; bootstrap, seed, media
-seed, and `secret:put` stay manual. Do not commit filled env files.
+as GitHub Actions secrets. CI runs `task release` on `v*` tags or
+`workflow_dispatch` only; bootstrap, seed, media seed, and `secret:put` stay
+manual. Do not commit filled env files.
