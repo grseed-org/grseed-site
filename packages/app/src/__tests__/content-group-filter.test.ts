@@ -108,6 +108,13 @@ describe('section group scoping', () => {
     expect(where.tags).toBeUndefined();
   });
 
+  it('scopes hr job posts to the hr category group', async () => {
+    await listPosts('hr', {}, {locale: 'zh-hans'});
+    const where = whereFor('posts')!;
+    expect(where['category.group']).toEqual({equals: 'hr'});
+    expect(where.tags).toBeUndefined();
+  });
+
   it('keeps the group filter when a specific post category narrows the query', async () => {
     await listPosts('service', {category: 'category'}, {locale: 'zh-hans'});
     const where = whereFor('posts')!;

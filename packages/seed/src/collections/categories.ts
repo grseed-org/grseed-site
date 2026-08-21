@@ -40,4 +40,8 @@ export const categories: CollectionEntry<Category>[] = [
     description: '品种审定、植物新品种权、专利、科技成果与公司荣誉。',
     order: 40,
   }),
+  category('hr', 'jobs', '招聘职位', {
+    description: '在招岗位与招聘说明。',
+    order: 10,
+  }),
 ];

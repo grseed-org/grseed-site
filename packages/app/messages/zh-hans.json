@@ -60,7 +60,11 @@
     "valueCardBadge": "理念 {index}",
     "badgeMutual": "双向选择",
     "badgeInnovation": "鼓励创新",
-    "badgeLearning": "持续学习"
+    "badgeLearning": "持续学习",
+    "jobsEyebrow": "招聘信息",
+    "jobsHeading": "在招职位",
+    "jobsEmpty": "暂无在招职位，欢迎通过联系我们投递简历。",
+    "jobsView": "查看在招职位"
   },
   "Contact": {
     "badgeClickCopy": "点击即可复制",

@@ -22,6 +22,7 @@ const backHref: Record<PostSection, string> = {
   blog: '/blog',
   service: '/pages/service',
   research: '/pages/research',
+  hr: '/pages/hr',
 };
 
 const toGalleryImage = (

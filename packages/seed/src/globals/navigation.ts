@@ -51,7 +51,7 @@ export const navigation = {
             {label: '技术指导', href: '#guidance'},
             {label: '客户服务', href: '#service'},
             {label: '人才理念', href: '/pages/hr'},
-            {label: '招聘信息', href: '/pages/contact'},
+            {label: '招聘信息', href: '/pages/hr#jobs'},
           ],
         },
       ],

@@ -30,7 +30,7 @@ export const Categories: CollectionConfig = {
       name: 'group',
       type: 'select',
       required: true,
-      options: ['blog', 'service', 'research'],
+      options: ['blog', 'service', 'research', 'hr'],
       admin: {
         description:
           'Post section that owns this category. Tags are intentionally group-less.',

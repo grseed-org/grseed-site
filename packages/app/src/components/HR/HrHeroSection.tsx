@@ -15,6 +15,7 @@ import {PlaceholderImage} from '@/components/About/AboutShared';
 import {mediaSlot} from '@/lib/media';
 
 export function HrHeroSection({hr}: {hr: Hr}) {
+  const t = useTranslations('Hr');
   const tc = useTranslations('Common');
   const highlights = hr.highlights ?? [];
 
@@ -41,6 +42,9 @@ export function HrHeroSection({hr}: {hr: Hr}) {
                 <Link href="/pages/contact">
                   {tc('contact')} <ArrowRight className="ml-2 size-4" />
                 </Link>
+              </Button>
+              <Button asChild variant="outline">
+                <Link href="#jobs">{t('jobsView')}</Link>
               </Button>
               <Button asChild variant="outline">
                 <Link href="/pages/about">{tc('learnCompany')}</Link>
@@ -72,8 +76,12 @@ export function HrHeroSection({hr}: {hr: Hr}) {
           <div className="lg:col-span-5">
             <PlaceholderImage slot={mediaSlot(hr.mediaSlots, 'hero-main')} />
             <div className="mt-4 grid gap-3 grid-cols-2">
-              <PlaceholderImage slot={mediaSlot(hr.mediaSlots, 'hero-support-1')} />
-              <PlaceholderImage slot={mediaSlot(hr.mediaSlots, 'hero-support-2')} />
+              <PlaceholderImage
+                slot={mediaSlot(hr.mediaSlots, 'hero-support-1')}
+              />
+              <PlaceholderImage
+                slot={mediaSlot(hr.mediaSlots, 'hero-support-2')}
+              />
             </div>
           </div>
         </div>

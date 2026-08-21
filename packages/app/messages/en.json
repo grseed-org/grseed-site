@@ -60,7 +60,11 @@
     "valueCardBadge": "理念 {index}",
     "badgeMutual": "双向选择",
     "badgeInnovation": "鼓励创新",
-    "badgeLearning": "持续学习"
+    "badgeLearning": "持续学习",
+    "jobsEyebrow": "Careers",
+    "jobsHeading": "Open positions",
+    "jobsEmpty": "There are no open positions right now. You are welcome to send a resume through the contact page.",
+    "jobsView": "View open positions"
   },
   "Contact": {
     "badgeClickCopy": "点击即可复制",

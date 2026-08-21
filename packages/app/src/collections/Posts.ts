@@ -5,8 +5,9 @@ import {isAdminOrEditor} from '../access/roles';
 import {seoField} from '../fields/seo';
 import {slugField} from '../fields/slug';
 
-// Public article/service/research entries. Section membership comes from the
-// post category's group; tags are shared descriptors and do not affect routing.
+// Public post entries (blog, service, research, hr). Section membership comes
+// from the post category's group; tags are shared descriptors and do not affect
+// routing.
 export const Posts: CollectionConfig = {
   slug: 'posts',
   admin: {

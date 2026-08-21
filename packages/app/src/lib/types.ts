@@ -59,7 +59,7 @@ export interface ProductListResponse {
   total?: number;
 }
 
-export type PostSection = 'blog' | 'service' | 'research';
+export type PostSection = 'blog' | 'service' | 'research' | 'hr';
 
 export interface PostItem {
   id: string;
